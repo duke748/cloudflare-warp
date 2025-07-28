@@ -33,11 +33,11 @@ jobs:
 
       - name: Extract Warp Version from built image
         id: get_version
-        # We run the image we just built to ask the warp-cli its version.
-        # The output of `warp-cli --version` is like "warp-cli 2024.6.402",
-        # so `awk '{print $2}'` extracts the version number.
+        # THIS IS THE CORRECTED STEP:
+        # We use `--entrypoint warp-cli` to bypass the custom entrypoint.sh
+        # script and run the `warp-cli --version` command directly.
         run: |
-          VERSION=$(docker run --rm local-warp:latest warp-cli --version | awk '{print $2}')
+          VERSION=$(docker run --rm --entrypoint warp-cli local-warp:latest --version | awk '{print $2}')
           echo "Extracted version: $VERSION"
           echo "WARP_VERSION=$VERSION" >> $GITHUB_OUTPUT
 
