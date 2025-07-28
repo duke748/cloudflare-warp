@@ -13,6 +13,12 @@ jobs:
   build-and-push:
     # This job will run on any available self-hosted runner
     runs-on: self-hosted
+    
+    # THIS IS THE FIX: Grant permissions to the job
+    # The GITHUB_TOKEN needs permission to write to the package registry (GHCR)
+    permissions:
+      contents: read    # Needed for actions/checkout
+      packages: write   # Needed to push Docker images
 
     steps:
       - name: Checkout repository
@@ -33,7 +39,6 @@ jobs:
 
       - name: Extract Warp Version from built image
         id: get_version
-        # THIS IS THE CORRECTED STEP:
         # We use `--entrypoint warp-cli` to bypass the custom entrypoint.sh
         # script and run the `warp-cli --version` command directly.
         run: |
